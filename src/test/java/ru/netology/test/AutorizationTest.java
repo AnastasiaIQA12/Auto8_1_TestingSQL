@@ -25,6 +25,22 @@ public class AutorizationTest {
         open("http://localhost:9999/");
     }
 
+    @AfterAll
+    static void tearDown() throws SQLException {
+        val deleteUserSQL = "DELETE FROM users";
+        val deleteCardSQL = "DELETE FROM cards";
+        val deleteAuthCodesSQL = "DELETE FROM auth_codes";
+        val runner = new QueryRunner();
+        try (
+                val conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass"
+                );
+        ) {
+            runner.update(conn,deleteAuthCodesSQL);
+            runner.update(conn,deleteCardSQL);
+            runner.update(conn, deleteUserSQL);
+        }
+    }
+
     @Test
     void shouldAutorizationInPersonalArea() throws SQLException {
         val loginPage = new LoginPage();
