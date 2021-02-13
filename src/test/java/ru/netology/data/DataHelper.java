@@ -25,7 +25,7 @@ public class DataHelper {
             login = (String) (runner.query(conn, loginSQL, new ScalarHandler<>()));
 
         }
-        if (login == "vasya") {
+        if (login.equals("vasya")) {
             password = "qwerty123";
         }
         if (login.equals("petya")) {
