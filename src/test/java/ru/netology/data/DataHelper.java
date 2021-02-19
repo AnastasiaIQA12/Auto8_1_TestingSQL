@@ -14,33 +14,20 @@ public class DataHelper {
 
     @Value
     public static class AuthInfo {
-        private String id;
         private String login;
         private String password;
     }
 
     public static AuthInfo getAuthInfo() {
-        val idSQL = "SELECT id FROM users";
-        val loginSQL = "SELECT login FROM users";
-        val runner = new QueryRunner();
-        String login = "", id = "", password = "";
-        try (
-                val conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass"
-                );
-        ) {
-            id = (String) (runner.query(conn, idSQL, new ScalarHandler<>()));
-            login = (String) (runner.query(conn, loginSQL, new ScalarHandler<>()));
+        return new AuthInfo("vasya", "qwerty123");
+    }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if (login.equals("vasya")) {
-            password = "qwerty123";
-        }
-        if (login.equals("petya")) {
-            password = "123qwerty";
-        }
-        return new AuthInfo(id, login, password);
+    public static AuthInfo getAuthInfoWrongPassword() {
+        return new AuthInfo("vasya", "12345");
+    }
+
+    public static AuthInfo getOtherAuthInfo() {
+        return new AuthInfo("petya", "123qwerty");
     }
 
     @Value
@@ -49,18 +36,25 @@ public class DataHelper {
     }
 
     public static VerificationCode getVerificationCode(AuthInfo authInfo) {
-        val codeSQL = "SELECT code FROM auth_codes WHERE created = (SELECT max(created) FROM auth_codes WHERE user_id='" + authInfo.id + "')";
-        val runner = new QueryRunner();
+        String id = "";
         String verificationCode = "";
+        val idSQL = "SELECT id FROM users WHERE login='" + authInfo.login + "'";
+        val runner = new QueryRunner();
         try (
                 val conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass"
                 );
         ) {
+            id = (String) runner.query(conn, idSQL, new ScalarHandler<>());
+            val codeSQL = "SELECT code FROM auth_codes WHERE created = (SELECT max(created) FROM auth_codes WHERE user_id='" + id + "')";
             verificationCode = (String) runner.query(conn, codeSQL, new ScalarHandler<>());
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return new VerificationCode(verificationCode);
+    }
+
+    public static VerificationCode getWrongVerificationCode() {
+        return new VerificationCode("12345");
     }
 
     public static void clearData() {

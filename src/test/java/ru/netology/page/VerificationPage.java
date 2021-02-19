@@ -1,10 +1,11 @@
 package ru.netology.page;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
-import org.openqa.selenium.Keys;
 import ru.netology.data.DataHelper;
 
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.$;
 
 public class VerificationPage {
@@ -21,15 +22,10 @@ public class VerificationPage {
         return new DashboardPage();
     }
 
-    public void wrongVerify(String verificationCode) {
+    public void wrongCode(String verificationCode) {
         codeField.setValue(verificationCode);
         verifyButton.click();
-        codeField.sendKeys(Keys.CONTROL + "A" + Keys.DELETE);
-        codeField.setValue(verificationCode);
-        verifyButton.click();
-        codeField.sendKeys(Keys.CONTROL + "A" + Keys.DELETE);
-        codeField.setValue(verificationCode);
-        verifyButton.click();
+        $(withText("Ошибка!")).shouldBe(Condition.visible);
     }
 
 }

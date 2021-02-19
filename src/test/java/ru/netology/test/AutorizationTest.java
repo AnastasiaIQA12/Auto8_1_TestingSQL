@@ -1,6 +1,6 @@
 package ru.netology.test;
 
-import com.codeborne.selenide.Condition;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +11,6 @@ import lombok.val;
 import ru.netology.data.DataHelper;
 import ru.netology.page.LoginPage;
 
-import static com.codeborne.selenide.Selectors.withText;
-import static com.codeborne.selenide.Selenide.*;
 
 public class AutorizationTest {
     @BeforeEach
@@ -31,8 +29,8 @@ public class AutorizationTest {
         val authInfo = DataHelper.getAuthInfo();
         val verificationPage = loginPage.validLogin(authInfo);
         val verificationCode = DataHelper.getVerificationCode(authInfo);
-        verificationPage.validVerify(verificationCode);
-        $(withText("Личный кабинет")).shouldBe(Condition.visible);
+        val dashboardPage = verificationPage.validVerify(verificationCode);
+        dashboardPage.PersonalArea();
     }
 
     @Test
@@ -40,7 +38,13 @@ public class AutorizationTest {
         val loginPage = new LoginPage();
         val authInfo = DataHelper.getAuthInfo();
         val verificationPage = loginPage.validLogin(authInfo);
-        verificationPage.wrongVerify("12345");
-        $(withText("Система заблокирована")).shouldBe(Condition.visible);
+        verificationPage.wrongCode(DataHelper.getWrongVerificationCode().getCode());
+    }
+
+    @Test
+    void shouldAuthorizationInPersonalAreaWrongPassword() {
+        val loginPage = new LoginPage();
+        val authInfo = DataHelper.getAuthInfoWrongPassword();
+        loginPage.wrongPassword(authInfo);
     }
 }
