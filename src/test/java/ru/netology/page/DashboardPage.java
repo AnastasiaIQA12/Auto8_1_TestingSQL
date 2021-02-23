@@ -14,7 +14,7 @@ public class DashboardPage {
         heading.shouldBe(visible);
     }
 
-    public void PersonalArea() {
+    public void personalArea() {
         $(withText("Личный кабинет")).shouldBe(Condition.visible);
     }
 

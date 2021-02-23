@@ -30,7 +30,7 @@ public class AutorizationTest {
         val verificationPage = loginPage.validLogin(authInfo);
         val verificationCode = DataHelper.getVerificationCode(authInfo);
         val dashboardPage = verificationPage.validVerify(verificationCode);
-        dashboardPage.PersonalArea();
+        dashboardPage.personalArea();
     }
 
     @Test
